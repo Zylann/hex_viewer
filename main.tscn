@@ -1,0 +1,79 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://main.gd" type="Script" id=1]
+[ext_resource path="res://main_view.gd" type="Script" id=2]
+[ext_resource path="res://text_view.gd" type="Script" id=3]
+[ext_resource path="res://hack_regular.tres" type="DynamicFont" id=4]
+[ext_resource path="res://minimap.gd" type="Script" id=5]
+
+[sub_resource type="Gradient" id=1]
+offsets = PoolRealArray( 0, 0.27566, 0.592375, 0.791789, 0.897361, 1 )
+colors = PoolColorArray( 0, 0, 0, 1, 1, 0, 0, 1, 1, 0.926939, 0.332016, 1, 0.148438, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1 )
+
+[node name="Main" type="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+gradient = SubResource( 1 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = -8.0
+margin_bottom = -8.0
+
+[node name="MenuBar" type="HBoxContainer" parent="VBoxContainer"]
+margin_right = 1008.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 0, 24 )
+
+[node name="Button" type="Button" parent="VBoxContainer/MenuBar"]
+margin_right = 59.0
+margin_bottom = 24.0
+text = "Open..."
+
+[node name="Main" type="HBoxContainer" parent="VBoxContainer"]
+margin_top = 28.0
+margin_right = 1008.0
+margin_bottom = 556.0
+size_flags_vertical = 3
+script = ExtResource( 2 )
+
+[node name="ColorRect" type="ColorRect" parent="VBoxContainer/Main"]
+margin_right = 988.0
+margin_bottom = 528.0
+size_flags_horizontal = 3
+color = Color( 0, 0, 0, 1 )
+
+[node name="TextView" type="Control" parent="VBoxContainer/Main/ColorRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 4.0
+margin_right = -4.0
+margin_bottom = -4.0
+size_flags_horizontal = 3
+script = ExtResource( 3 )
+font = ExtResource( 4 )
+
+[node name="Minimap" type="Control" parent="VBoxContainer/Main"]
+margin_left = 992.0
+margin_right = 1008.0
+margin_bottom = 528.0
+rect_min_size = Vector2( 16, 0 )
+rect_clip_content = true
+script = ExtResource( 5 )
+
+[node name="StatusBar" type="HBoxContainer" parent="VBoxContainer"]
+margin_top = 560.0
+margin_right = 1008.0
+margin_bottom = 584.0
+rect_min_size = Vector2( 0, 24 )
+
+[node name="Label" type="Label" parent="VBoxContainer/StatusBar"]
+margin_top = 5.0
+margin_right = 68.0
+margin_bottom = 19.0
+text = "Status text"
