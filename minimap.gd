@@ -1,5 +1,7 @@
 extends Control
 
+signal ask_scroll(row_index)
+
 onready var _overlay = get_node("Overlay")
 
 var _images = []
@@ -8,6 +10,7 @@ var _row_index = 0
 var _strip_width = 16
 var _strip_height = 4096
 var _total_rows = 0
+var _visible_rows_on_text = 20 # TODO Proper value
 
 
 func update_textures(buffer):
@@ -37,15 +40,22 @@ func set_row_index(i):
 		_overlay.update()
 
 
+func _gui_input(event):
+	if event is InputEventMouseMotion:
+		if (event.button_mask & BUTTON_MASK_LEFT) != 0:
+			var mpos = event.position
+			var row_index = int(_total_rows * (mpos.y / rect_size.y)) - _visible_rows_on_text / 2
+			emit_signal("ask_scroll", row_index)
+
+
 func _draw():
 	if len(_textures) == 0:
 		return
 	
 	var visible_rows_on_map = int(rect_size.y)
-	var visible_rows_on_text = 20 # TODO Get proper value
 	var ratio = _row_index / float(_total_rows)
 	
-	var virtual_map_offset = -int(ratio * (_total_rows - visible_rows_on_map + visible_rows_on_text))
+	var virtual_map_offset = -int(ratio * (_total_rows - visible_rows_on_map + _visible_rows_on_text))
 
 	var strip_index = -virtual_map_offset / _strip_height
 	var total_strips = _total_rows / _strip_height + 1

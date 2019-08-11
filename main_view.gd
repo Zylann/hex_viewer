@@ -31,10 +31,15 @@ func _scroll(delta):
 		delta *= 2
 	_last_scroll_time = OS.get_ticks_msec()
 	
-	var i = _text_view.get_row_index() + delta
+	_scroll_to(_text_view.get_row_index() + delta)
+
+
+func _scroll_to(i):
 	if i < 0:
 		i = 0
 	_text_view.set_row_index(i)
 	_minimap.set_row_index(i)
 
-	
+
+func _on_Minimap_ask_scroll(row_index):
+	_scroll_to(row_index)

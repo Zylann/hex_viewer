@@ -57,7 +57,7 @@ script = ExtResource( 4 )
 font = ExtResource( 5 )
 
 [node name="Minimap" type="Control" parent="VBoxContainer/Main"]
-self_modulate = Color( 0.74902, 0.74902, 0.74902, 1 )
+self_modulate = Color( 0.603922, 0.603922, 0.603922, 1 )
 material = ExtResource( 6 )
 margin_left = 992.0
 margin_right = 1008.0
@@ -69,6 +69,7 @@ script = ExtResource( 7 )
 [node name="Overlay" type="Control" parent="VBoxContainer/Main/Minimap"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+mouse_filter = 2
 
 [node name="StatusBar" type="HBoxContainer" parent="VBoxContainer"]
 margin_top = 560.0
@@ -81,4 +82,5 @@ margin_top = 5.0
 margin_right = 68.0
 margin_bottom = 19.0
 text = "Status text"
+[connection signal="ask_scroll" from="VBoxContainer/Main/Minimap" to="VBoxContainer/Main" method="_on_Minimap_ask_scroll"]
 [connection signal="draw" from="VBoxContainer/Main/Minimap/Overlay" to="VBoxContainer/Main/Minimap" method="_on_Overlay_draw"]
