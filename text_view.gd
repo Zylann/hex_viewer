@@ -21,6 +21,7 @@ func set_wrapped_buffer(b):
 
 func set_row_index(i):
 	#print("Set row index ", i)
+	assert(typeof(i) == TYPE_INT)
 	if i != _row_index:
 		_row_index = i
 		update()

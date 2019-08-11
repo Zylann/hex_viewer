@@ -44,7 +44,7 @@ func _gui_input(event):
 	if event is InputEventMouseMotion:
 		if (event.button_mask & BUTTON_MASK_LEFT) != 0:
 			var mpos = event.position
-			var row_index = int(_total_rows * (mpos.y / rect_size.y)) - _visible_rows_on_text / 2
+			var row_index = _get_row_index_from_visual_offset(mpos.y)
 			emit_signal("ask_scroll", row_index)
 
 
@@ -60,7 +60,9 @@ func _draw():
 	var strip_index = -virtual_map_offset / _strip_height
 	var total_strips = _total_rows / _strip_height + 1
 	
-	var map_offset = virtual_map_offset + _strip_height * strip_index
+	var map_offset = 0
+	if _total_rows > visible_rows_on_map:
+		map_offset = virtual_map_offset + _strip_height * strip_index
 	#print(strip_index)
 	
 	_draw_strip(strip_index, map_offset)
@@ -79,12 +81,24 @@ func _draw_strip(strip_index, y):
 
 func _on_Overlay_draw():
 	var ci = _overlay
-	var visible_rows_on_text = 20 # TODO Get proper value
-	var ratio = _row_index / float(_total_rows)
-	var win_offset = ratio * (rect_size.y - visible_rows_on_text)
-	var win_rect = Rect2(1, win_offset, rect_size.x - 1, visible_rows_on_text)
+	var win_offset = _get_visual_offset_from_row_index(_row_index)
+	var win_rect = Rect2(1, win_offset, rect_size.x - 1, _visible_rows_on_text)
 	ci.draw_rect(win_rect, Color(1,1,1,0.3), true)
 	ci.draw_rect(win_rect, Color(1,1,1,0.7), false)
+
+
+func _get_visual_offset_from_row_index(row_index):
+	if _total_rows <= rect_size.y:
+		return row_index
+	var ratio = _row_index / float(_total_rows)
+	return ratio * (rect_size.y - _visible_rows_on_text)
+
+
+func _get_row_index_from_visual_offset(y):
+	if _total_rows <= rect_size.y:
+		return int(y)
+	var row_index = int(_total_rows * (y / rect_size.y)) - _visible_rows_on_text / 2
+	return row_index
 
 
 func _make_hex_images(buffer):
@@ -150,6 +164,6 @@ func _make_hex_images(buffer):
 #	for i in len(atlases):
 #		atlases[i].save_png(str("res://debug_data/atlas_", i, ".png"))
 	
-	var time_spent = OS.get_ticks_msec()
+	var time_spent = OS.get_ticks_msec() - time_before
 	print("Spent ", time_spent, " ms loading atlases")
 	return atlases
