@@ -2,9 +2,10 @@ extends Control
 
 export(Gradient) var gradient = null
 
-onready var _text_view = get_node("VBoxContainer/Main/ColorRect/VBoxContainer/TextView")
-onready var _minimap = get_node("VBoxContainer/Main/Minimap")
+onready var _text_view = get_node("VBoxContainer/HSplitContainer/Main/ColorRect/VBoxContainer/TextView")
+onready var _minimap = get_node("VBoxContainer/HSplitContainer/Main/Minimap")
 onready var _status_label = get_node("VBoxContainer/StatusBar/Label")
+onready var _data_info = get_node("VBoxContainer/HSplitContainer/LeftPanel/DataInfo")
 
 # To avoid CoW
 class BufferWrapper:
@@ -16,6 +17,7 @@ var _open_dialog = null
 
 func _ready():	
 	_text_view.set_wrapped_buffer(_wrapped_buffer)
+	_data_info.set_wrapped_buffer(_wrapped_buffer)
 	
 	var base_control = self
 	

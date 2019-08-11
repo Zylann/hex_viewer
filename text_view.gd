@@ -2,6 +2,8 @@ extends Control
 
 export(DynamicFont) var font
 
+signal hovered_offset_changed(offset)
+
 onready var _bg = get_node("Bg")
 
 var _row_width = 16
@@ -39,6 +41,7 @@ func set_row_index(i):
 	assert(typeof(i) == TYPE_INT)
 	if i != _row_index:
 		_row_index = i
+		_set_hovered_row_col_from_mouse(get_local_mouse_position())
 		update()
 
 
@@ -53,20 +56,37 @@ func get_visible_row_count():
 
 func _gui_input(event):
 	if event is InputEventMouseMotion:
-		var mpos = event.position
-		var pos = _get_row_col_from_mouse_pos(mpos)
-		if pos == null:
-			_set_hovered_row_col(-1, -1)
-		else:
-			_set_hovered_row_col(int(pos.y), int(pos.x))
+		_set_hovered_row_col_from_mouse(event.position)
+
+
+func _set_hovered_row_col_from_mouse(mpos):
+	var rowcol = _get_row_col_from_mouse_pos(mpos)
+	if rowcol == null:
+		_set_hovered_row_col(-1, -1)
+	else:
+		_set_hovered_row_col(rowcol[0], rowcol[1])
+
+
+func _get_hovered_offset():
+	if _hovered_col == -1 or _hovered_row == -1:
+		return -1
+	return _hovered_col + _hovered_row * _row_width
 
 
 func _set_hovered_row_col(row, col):
+	var prev_offset = _get_hovered_offset()
+	
 	if row != _hovered_row or col != _hovered_col:
 		#print("Hover ", row, ", ", col)
 		_hovered_row = row
 		_hovered_col = col
+		
 		_bg.update()
+
+	var offset = _get_hovered_offset()
+	
+	if offset != prev_offset and offset != -1:
+		emit_signal("hovered_offset_changed", offset)
 
 
 func _get_row_col_from_mouse_pos(mpos):
@@ -76,17 +96,19 @@ func _get_row_col_from_mouse_pos(mpos):
 	var ascii_gutter_begin = hex_gutter_end + _gutter_separation
 	var ascii_gutter_end = ascii_gutter_begin + _ascii_gutter_width
 	
+	var visual_rowcol
+	
 	if mpos.x >= hex_gutter_begin and mpos.x < hex_gutter_end:
 		mpos.x -= hex_gutter_begin
-		var pos = mpos / Vector2(3 * _char_width, font.get_height())
-		#if pos.x - floor(pos.x) < 0.666:
-		return pos.floor()
+		visual_rowcol = (mpos / Vector2(3 * _char_width, font.get_height())).floor()
 	
 	elif mpos.x >= ascii_gutter_begin and mpos.x < ascii_gutter_end:
 		mpos.x -= ascii_gutter_begin
-		var pos = mpos / Vector2(_char_width, font.get_height())
-		return pos.floor()
+		visual_rowcol = (mpos / Vector2(_char_width, font.get_height())).floor()
 	
+	if visual_rowcol != null:
+		# Use integers because row can be a high number, floats would ruin it
+		return [int(visual_rowcol.y) + _row_index, int(visual_rowcol.x)]
 	return null
 
 
@@ -154,15 +176,17 @@ func _on_Bg_draw():
 	if _hovered_col == -1 or _hovered_row == -1:
 		return
 	var ci = _bg
+	
+	var visual_row = _hovered_row - _row_index
 
 	var hex_gutter_begin = _offset_gutter_width + _gutter_separation
 	var ascii_gutter_begin = hex_gutter_begin + _hex_gutter_width + _gutter_separation
 	
 	var hcsize = Vector2(3.0 * _char_width, font.get_height())
-	var hpos = Vector2(_hovered_col, _hovered_row) * hcsize
+	var hpos = Vector2(_hovered_col, visual_row) * hcsize
 
 	var acsize = Vector2(_char_width, font.get_height())
-	var apos = Vector2(_hovered_col, _hovered_row) * acsize
+	var apos = Vector2(_hovered_col, visual_row) * acsize
 	
 	var col = Color(1,1,1,0.1)
 	ci.draw_rect(Rect2(hex_gutter_begin + hpos.x, 0, hcsize.x, rect_size.y), col)

@@ -1,12 +1,13 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://main.gd" type="Script" id=1]
 [ext_resource path="res://gradient.tres" type="Gradient" id=2]
-[ext_resource path="res://main_view.gd" type="Script" id=3]
-[ext_resource path="res://hack_regular.tres" type="DynamicFont" id=4]
-[ext_resource path="res://text_view.gd" type="Script" id=5]
-[ext_resource path="res://minimap_material.tres" type="Material" id=6]
-[ext_resource path="res://minimap.gd" type="Script" id=7]
+[ext_resource path="res://data_info.gd" type="Script" id=3]
+[ext_resource path="res://main_view.gd" type="Script" id=4]
+[ext_resource path="res://hack_regular.tres" type="DynamicFont" id=5]
+[ext_resource path="res://text_view.gd" type="Script" id=6]
+[ext_resource path="res://minimap_material.tres" type="Material" id=7]
+[ext_resource path="res://minimap.gd" type="Script" id=8]
 
 [node name="Main" type="Panel"]
 anchor_right = 1.0
@@ -33,25 +34,49 @@ margin_right = 59.0
 margin_bottom = 24.0
 text = "Open..."
 
-[node name="Main" type="HBoxContainer" parent="VBoxContainer"]
+[node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer"]
 margin_top = 28.0
 margin_right = 1008.0
 margin_bottom = 556.0
 size_flags_vertical = 3
+split_offset = 208
+
+[node name="LeftPanel" type="ColorRect" parent="VBoxContainer/HSplitContainer"]
+margin_right = 208.0
+margin_bottom = 528.0
+color = Color( 0.0862745, 0.0862745, 0.0862745, 1 )
+
+[node name="DataInfo" type="GridContainer" parent="VBoxContainer/HSplitContainer/LeftPanel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 4.0
+margin_right = -4.0
+margin_bottom = -4.0
+mouse_filter = 2
+columns = 2
 script = ExtResource( 3 )
 
-[node name="ColorRect" type="ColorRect" parent="VBoxContainer/Main"]
-margin_right = 988.0
+[node name="Main" type="HBoxContainer" parent="VBoxContainer/HSplitContainer"]
+margin_left = 220.0
+margin_right = 1008.0
 margin_bottom = 528.0
+size_flags_vertical = 3
+script = ExtResource( 4 )
+
+[node name="ColorRect" type="ColorRect" parent="VBoxContainer/HSplitContainer/Main"]
+margin_right = 768.0
+margin_bottom = 528.0
+rect_clip_content = true
 size_flags_horizontal = 3
 color = Color( 0.0313726, 0.0313726, 0.0313726, 1 )
 
-[node name="ColorRect" type="ColorRect" parent="VBoxContainer/Main/ColorRect"]
+[node name="ColorRect" type="ColorRect" parent="VBoxContainer/HSplitContainer/Main/ColorRect"]
 anchor_right = 1.0
 rect_min_size = Vector2( 0, 24 )
 color = Color( 0.0862745, 0.0862745, 0.0862745, 1 )
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Main/ColorRect"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/Main/ColorRect"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -59,39 +84,40 @@ margin_top = 4.0
 margin_right = -4.0
 margin_bottom = -4.0
 
-[node name="Label" type="Label" parent="VBoxContainer/Main/ColorRect/VBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer/HSplitContainer/Main/ColorRect/VBoxContainer"]
 modulate = Color( 0.490196, 0.490196, 0.490196, 1 )
-margin_right = 980.0
+margin_right = 760.0
 margin_bottom = 19.0
-custom_fonts/font = ExtResource( 4 )
+custom_fonts/font = ExtResource( 5 )
 text = "Offset    00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f"
 
-[node name="TextView" type="Control" parent="VBoxContainer/Main/ColorRect/VBoxContainer"]
+[node name="TextView" type="Control" parent="VBoxContainer/HSplitContainer/Main/ColorRect/VBoxContainer"]
 margin_top = 23.0
-margin_right = 980.0
+margin_right = 760.0
 margin_bottom = 520.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource( 5 )
-font = ExtResource( 4 )
+script = ExtResource( 6 )
+font = ExtResource( 5 )
 
-[node name="Bg" type="Control" parent="VBoxContainer/Main/ColorRect/VBoxContainer/TextView"]
+[node name="Bg" type="Control" parent="VBoxContainer/HSplitContainer/Main/ColorRect/VBoxContainer/TextView"]
 show_behind_parent = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Minimap" type="Control" parent="VBoxContainer/Main"]
+[node name="Minimap" type="Control" parent="VBoxContainer/HSplitContainer/Main"]
+editor/display_folded = true
 self_modulate = Color( 0.603922, 0.603922, 0.603922, 1 )
-material = ExtResource( 6 )
-margin_left = 992.0
-margin_right = 1008.0
+material = ExtResource( 7 )
+margin_left = 772.0
+margin_right = 788.0
 margin_bottom = 528.0
 rect_min_size = Vector2( 16, 0 )
 rect_clip_content = true
-script = ExtResource( 7 )
+script = ExtResource( 8 )
 
-[node name="Overlay" type="Control" parent="VBoxContainer/Main/Minimap"]
+[node name="Overlay" type="Control" parent="VBoxContainer/HSplitContainer/Main/Minimap"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
@@ -108,6 +134,7 @@ margin_right = 68.0
 margin_bottom = 19.0
 text = "Status text"
 [connection signal="pressed" from="VBoxContainer/MenuBar/OpenButton" to="." method="_on_OpenButton_pressed"]
-[connection signal="draw" from="VBoxContainer/Main/ColorRect/VBoxContainer/TextView/Bg" to="VBoxContainer/Main/ColorRect/VBoxContainer/TextView" method="_on_Bg_draw"]
-[connection signal="ask_scroll" from="VBoxContainer/Main/Minimap" to="VBoxContainer/Main" method="_on_Minimap_ask_scroll"]
-[connection signal="draw" from="VBoxContainer/Main/Minimap/Overlay" to="VBoxContainer/Main/Minimap" method="_on_Overlay_draw"]
+[connection signal="hovered_offset_changed" from="VBoxContainer/HSplitContainer/Main/ColorRect/VBoxContainer/TextView" to="VBoxContainer/HSplitContainer/LeftPanel/DataInfo" method="_on_TextView_hovered_offset_changed"]
+[connection signal="draw" from="VBoxContainer/HSplitContainer/Main/ColorRect/VBoxContainer/TextView/Bg" to="VBoxContainer/HSplitContainer/Main/ColorRect/VBoxContainer/TextView" method="_on_Bg_draw"]
+[connection signal="ask_scroll" from="VBoxContainer/HSplitContainer/Main/Minimap" to="VBoxContainer/HSplitContainer/Main" method="_on_Minimap_ask_scroll"]
+[connection signal="draw" from="VBoxContainer/HSplitContainer/Main/Minimap/Overlay" to="VBoxContainer/HSplitContainer/Main/Minimap" method="_on_Overlay_draw"]
