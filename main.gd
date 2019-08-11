@@ -4,6 +4,7 @@ export(Gradient) var gradient = null
 
 onready var _text_view = get_node("VBoxContainer/Main/ColorRect/TextView")
 onready var _minimap = get_node("VBoxContainer/Main/Minimap")
+onready var _status_label = get_node("VBoxContainer/StatusBar/Label")
 
 # To avoid CoW
 class BufferWrapper:
@@ -45,6 +46,21 @@ func open_file(fpath):
 	_wrapped_buffer.buffer = buffer
 	_minimap.update_textures(buffer)
 	_text_view.update()
+	_status_label.text = str(_format_number_with_commas(flen), " bytes")
+
+
+static func _format_number_with_commas(n):
+	assert(typeof(n) == TYPE_INT)
+	assert(n >= 0)
+	if n < 1000:
+		return str(n)
+	var s = str(n % 1000).pad_zeros(3)
+	n /= 1000
+	while true:
+		if n < 1000:
+			return str(str(n), ",", s)
+		s = str(str(n % 1000).pad_zeros(3), ",", s)
+		n /= 1000
 
 
 func _on_OpenButton_pressed():
