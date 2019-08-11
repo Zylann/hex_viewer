@@ -27,7 +27,7 @@ margin_right = 1008.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 0, 24 )
 
-[node name="Button" type="Button" parent="VBoxContainer/MenuBar"]
+[node name="OpenButton" type="Button" parent="VBoxContainer/MenuBar"]
 margin_right = 59.0
 margin_bottom = 24.0
 text = "Open..."
@@ -82,5 +82,6 @@ margin_top = 5.0
 margin_right = 68.0
 margin_bottom = 19.0
 text = "Status text"
+[connection signal="pressed" from="VBoxContainer/MenuBar/OpenButton" to="." method="_on_OpenButton_pressed"]
 [connection signal="ask_scroll" from="VBoxContainer/Main/Minimap" to="VBoxContainer/Main" method="_on_Minimap_ask_scroll"]
 [connection signal="draw" from="VBoxContainer/Main/Minimap/Overlay" to="VBoxContainer/Main/Minimap" method="_on_Overlay_draw"]
