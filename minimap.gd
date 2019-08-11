@@ -1,14 +1,20 @@
 extends Control
 
+onready var _overlay = get_node("Overlay")
+
 var _images = []
 var _textures = []
 var _row_index = 0
 var _strip_width = 16
+var _strip_height = 4096
+var _total_rows = 0
 
 
 func update_textures(buffer):
 	_images.clear()
 	_textures.clear()
+	
+	_total_rows = len(buffer) / _strip_width
 	
 	_images = _make_hex_images(buffer)
 	
@@ -21,29 +27,61 @@ func update_textures(buffer):
 	print("Spent ", time_spent, " ms uploading textures")
 	
 	update()
+	_overlay.update()
 
 
 func set_row_index(i):
 	if _row_index != i:
 		_row_index = i
 		update()
+		_overlay.update()
 
 
 func _draw():
 	if len(_textures) == 0:
 		return
-	# TODO
-	var tex = _textures[0]
-	var dst_rect = Rect2(0, 0, _strip_width, tex.get_height())
-	var src_rect = Rect2(0, 0, _strip_width, tex.get_height())
+	
+	var visible_rows_on_map = int(rect_size.y)
+	var visible_rows_on_text = 20 # TODO Get proper value
+	var ratio = _row_index / float(_total_rows)
+	
+	var virtual_map_offset = -int(ratio * (_total_rows - visible_rows_on_map + visible_rows_on_text))
+
+	var strip_index = -virtual_map_offset / _strip_height
+	var total_strips = _total_rows / _strip_height + 1
+	
+	var map_offset = virtual_map_offset + _strip_height * strip_index
+	#print(strip_index)
+	
+	_draw_strip(strip_index, map_offset)
+	if strip_index + 1 < total_strips:
+		_draw_strip(strip_index + 1, map_offset + _strip_height)
+	
+
+func _draw_strip(strip_index, y):
+	var strips_per_page = _strip_height / _strip_width
+	var page = strip_index / strips_per_page
+	var tex = _textures[page]
+	var src_rect = Rect2((strip_index % strips_per_page) * _strip_width, 0, _strip_width, tex.get_height())
+	var dst_rect = Rect2(0, y, _strip_width, tex.get_height())
 	draw_texture_rect_region(tex, dst_rect, src_rect)
+
+
+func _on_Overlay_draw():
+	var ci = _overlay
+	var visible_rows_on_text = 20 # TODO Get proper value
+	var ratio = _row_index / float(_total_rows)
+	var win_offset = ratio * (rect_size.y - visible_rows_on_text)
+	var win_rect = Rect2(1, win_offset, rect_size.x - 1, visible_rows_on_text)
+	ci.draw_rect(win_rect, Color(1,1,1,0.3), true)
+	ci.draw_rect(win_rect, Color(1,1,1,0.7), false)
 
 
 func _make_hex_images(buffer):
 	var time_before = OS.get_ticks_msec()
 	
 	var strip_width = _strip_width
-	var strip_height = 4096
+	var strip_height = _strip_height
 	
 	var strip_area = strip_width * strip_height
 	var strip_count = buffer.size() / strip_area + 1
@@ -105,5 +143,3 @@ func _make_hex_images(buffer):
 	var time_spent = OS.get_ticks_msec()
 	print("Spent ", time_spent, " ms loading atlases")
 	return atlases
-
-

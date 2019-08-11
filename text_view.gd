@@ -56,7 +56,7 @@ func _draw():
 	
 	for i in displayed_row_count:
 		var row_begin_offset = begin_offset + i * _row_width
-		if row_begin_offset > len(buffer):
+		if row_begin_offset >= len(buffer):
 			break
 		
 		var row_end_offset = row_begin_offset + _row_width
@@ -74,7 +74,6 @@ func _draw():
 			hex_string += str(_hex_to_string[buffer[j]], " ")
 		draw_string(font, pos, hex_string, text_color)
 		pos.x += hex_text_width
-		
 		var sub = buffer.subarray(row_begin_offset, row_end_offset - 1)
 		for j in len(sub):
 			var c = sub[j]
