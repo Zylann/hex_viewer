@@ -2,7 +2,7 @@ extends Control
 
 export(Gradient) var gradient = null
 
-onready var _text_view = get_node("VBoxContainer/Main/ColorRect/TextView")
+onready var _text_view = get_node("VBoxContainer/Main/ColorRect/VBoxContainer/TextView")
 onready var _minimap = get_node("VBoxContainer/Main/Minimap")
 onready var _status_label = get_node("VBoxContainer/StatusBar/Label")
 
