@@ -26,13 +26,6 @@ func _ready():
 	_open_dialog.access = FileDialog.ACCESS_FILESYSTEM
 	_open_dialog.connect("file_selected", self, "_on_OpenDialog_file_selected")
 	base_control.add_child(_open_dialog)
-	
-	# TEST
-	#open_file("D:/PROJETS/INFO/GODOT/Plugins/HTerrain/hterrain/addons/zylann.hterrain/hterrain.gd")
-	#open_file("D:/PROJETS/INFO/GODOT/Games/HexViewer/main.gd")
-	open_file("D:/PROJETS/INFO/GODOT/bin/Godot_v3.1-stable_win64.exe")
-	#open_file("C:/Users/Marc/AppData/Roaming/.minecraft/saves/2b2t_org/region/r.0.0.mca")
-	#open_file("D:/SONS/rus_battlecry11.wav")
 
 
 func open_file(fpath):
