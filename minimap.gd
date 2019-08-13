@@ -17,7 +17,7 @@ func update_textures(buffer):
 	_images.clear()
 	_textures.clear()
 	
-	_total_rows = len(buffer) / _strip_width
+	_total_rows = len(buffer) / _strip_width + 1
 	
 	_images = _make_hex_images(buffer)
 	
