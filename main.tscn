@@ -24,7 +24,6 @@ margin_right = -8.0
 margin_bottom = -8.0
 
 [node name="MenuBar" type="HBoxContainer" parent="VBoxContainer"]
-editor/display_folded = true
 margin_right = 1008.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 0, 24 )
@@ -33,6 +32,12 @@ rect_min_size = Vector2( 0, 24 )
 margin_right = 59.0
 margin_bottom = 24.0
 text = "Open..."
+
+[node name="ReloadButton" type="Button" parent="VBoxContainer/MenuBar"]
+margin_left = 63.0
+margin_right = 118.0
+margin_bottom = 24.0
+text = "Reload"
 
 [node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer"]
 margin_top = 28.0
@@ -134,6 +139,7 @@ margin_right = 68.0
 margin_bottom = 19.0
 text = "Status text"
 [connection signal="pressed" from="VBoxContainer/MenuBar/OpenButton" to="." method="_on_OpenButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/MenuBar/ReloadButton" to="." method="_on_ReloadButton_pressed"]
 [connection signal="hovered_offset_changed" from="VBoxContainer/HSplitContainer/Main/ColorRect/VBoxContainer/TextView" to="VBoxContainer/HSplitContainer/LeftPanel/DataInfo" method="_on_TextView_hovered_offset_changed"]
 [connection signal="draw" from="VBoxContainer/HSplitContainer/Main/ColorRect/VBoxContainer/TextView/Bg" to="VBoxContainer/HSplitContainer/Main/ColorRect/VBoxContainer/TextView" method="_on_Bg_draw"]
 [connection signal="ask_scroll" from="VBoxContainer/HSplitContainer/Main/Minimap" to="VBoxContainer/HSplitContainer/Main" method="_on_Minimap_ask_scroll"]

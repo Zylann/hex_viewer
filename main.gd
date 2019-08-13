@@ -13,9 +13,10 @@ class BufferWrapper:
 
 var _wrapped_buffer = BufferWrapper.new()
 var _open_dialog = null
+var _filepath = ""
 
 
-func _ready():	
+func _ready():
 	_text_view.set_wrapped_buffer(_wrapped_buffer)
 	_data_info.set_wrapped_buffer(_wrapped_buffer)
 	
@@ -42,6 +43,7 @@ func open_file(fpath):
 	_minimap.update_textures(buffer)
 	_text_view.update()
 	_status_label.text = str(_format_number_with_commas(flen), " bytes")
+	_filepath = fpath
 
 
 static func _format_number_with_commas(n):
@@ -64,4 +66,10 @@ func _on_OpenButton_pressed():
 
 func _on_OpenDialog_file_selected(fpath):
 	open_file(fpath)
+
+
+func _on_ReloadButton_pressed():
+	if _filepath != "":
+		open_file(_filepath)
+
 
