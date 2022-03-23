@@ -16,6 +16,9 @@ class Field extends StructureItem:
 	var array_count
 	var parent_struct_name : String
 	var position_in_code := -1
+	# Is the field referred to in a struct (i.e we need to read it again after parsing it in order
+	# to parse something else)
+	var referred := false
 
 
 class UnknownData extends StructureItem:
@@ -39,16 +42,17 @@ var _validated := false
 
 
 const _primitive_types = {
-	"u8": 1,
-	"s8": 1,
-	"u16": 2,
-	"s16": 2,
-	"u32": 4,
-	"s32": 4,
-	"f32": 4,
-	"u64": 8,
-	"s64": 8,
-	"f64": 8
+	# size, is_integer
+	"u8": [1, true],
+	"s8": [1, true],
+	"u16": [2, true],
+	"s16": [2, true],
+	"u32": [4, true],
+	"s32": [4, true],
+	"f32": [4, false],
+	"u64": [8, true],
+	"s64": [8, true],
+	"f64": [8, false]
 }
 
 const _primitive_types_aliases = {
@@ -76,10 +80,16 @@ static func is_primitive_type_name(type_name: String):
 	return _primitive_types.has(type_name) or _primitive_types_aliases.has(type_name)
 
 
+static func is_integer_primitive_type_name(type_name: String):
+	if not _primitive_types.has(type_name):
+		type_name = _primitive_types_aliases[type_name]
+	return _primitive_types[type_name][1]
+
+
 static func get_primitive_type_size(type_name: String) -> int:
 	if not _primitive_types.has(type_name):
 		type_name = _primitive_types_aliases[type_name]
-	return _primitive_types[type_name]
+	return _primitive_types[type_name][0]
 
 
 func add_struct(struct: Structure):

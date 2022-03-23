@@ -5,14 +5,18 @@ class Metadata:
 	# Fuck pool arrays
 	#var field_ids := PoolIntArray()
 	# Let's waste memory instead
+	
+	# Byte index => ID of the field in the Schema
 	var field_ids = []
+
 
 class StackFrame:
 	# Which struct are we in
 	var struct
 	# Which item of the struct are we evaluating
 	var item_index := 0
-	#var field_values := {}
+	# Field name => value (when a primitive)
+	var referred_field_values := {}
 
 
 var _binary_data : PoolByteArray
@@ -72,16 +76,22 @@ func step():
 		if typeof(item.array_count) == TYPE_INT:
 			array_count = item.array_count
 		elif typeof(item.array_count) == TYPE_STRING:
-			# TODO Lookup size
-			assert(false)
+			array_count = stack_frame.referred_field_values[item.array_count]
 		elif typeof(item.array_count) == TYPE_NIL:
 			pass
 		else:
 			# Unexpected type
 			assert(false)
+		assert(typeof(array_count) == TYPE_INT)
 
 		if Schema.is_primitive_type_name(item.type_name):
 			var size = Schema.get_primitive_type_size(item.type_name) * array_count
+
+			if item.referred and Schema.is_integer_primitive_type_name(item.type_name) \
+			and _position + size <= len(_binary_data):
+				var n = _read_uint(_binary_data, _position, size)
+				stack_frame.referred_field_values[item.name] = n
+
 			#print("Array count: ", array_count)
 			for i in size:
 				_metadata.field_ids.append(item.id)
@@ -110,3 +120,13 @@ func step():
 		_stack.pop_back()
 		if len(_stack) == 0:
 			_end = true
+
+
+static func _read_uint(binary_data, begin: int, length: int) -> int:
+	var n = 0
+	for i in length:
+		n = (n << 8) | binary_data[begin + i]
+#	if signed and ((n >> (length * 8 - 1)) & 1) != 0:
+#		n = -n
+	return n
+

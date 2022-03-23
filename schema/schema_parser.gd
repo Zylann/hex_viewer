@@ -125,7 +125,7 @@ func _parse_field(tokenizer: Tokenizer, struct: Schema.Structure, type_name: Str
 	
 	var has_array_count = false
 	if token.type == Token.SQUARE_BRACKET_OPEN:
-		if not _parse_array_count(tokenizer, field):
+		if not _parse_array_count(tokenizer, field, struct):
 			return _FIELD_RETURN_ERROR
 		has_array_count = true
 	
@@ -143,11 +143,14 @@ func _parse_field(tokenizer: Tokenizer, struct: Schema.Structure, type_name: Str
 		if has_array_count:
 			_make_error("Array count already specified")
 			return _FIELD_RETURN_ERROR
-		if not _parse_array_count(tokenizer, field):
+		if not _parse_array_count(tokenizer, field, struct):
 			return _FIELD_RETURN_ERROR
 
 	elif token.type == Token.BRACE_CLOSE:
 		ret = _FIELD_RETURN_END_OF_STRUCT
+		
+	else:
+		tokenizer.repush_token(token)
 	
 	# Note, semicolons are ignored by the parser
 	
@@ -156,7 +159,7 @@ func _parse_field(tokenizer: Tokenizer, struct: Schema.Structure, type_name: Str
 	return ret
 
 
-func _parse_array_count(tokenizer: Tokenizer, field: Schema.Field) -> bool:
+func _parse_array_count(tokenizer: Tokenizer, field: Schema.Field, struct: Schema.Structure) -> bool:
 	var token := tokenizer.get_next()
 
 	if tokenizer.has_error():
@@ -172,7 +175,16 @@ func _parse_array_count(tokenizer: Tokenizer, field: Schema.Field) -> bool:
 		field.array_count = token.value
 
 	elif token.type == Token.NAME:
-		field.array_count = token.name
+		field.array_count = token.value
+		var found = false
+		for item in struct.items:
+			if item is Schema.Field and item.name == token.value:
+				item.referred = true
+				found = true
+				break
+		if not found:
+			_make_error("Referring to unknown variable at this point in the struct")
+			return false
 	
 	else:
 		_make_error("Expected positive integer or field name")

@@ -4,7 +4,7 @@ const Token = preload("./schema_token.gd")
 var _text : String
 var _position := 0
 var _error_message := ""
-#var _repushed_token = null
+var _repushed_token = null
 var _debug_tokens := []
 
 const _operators = {
@@ -52,9 +52,18 @@ func _make_error(message: String):
 
 
 func get_next() -> Token:
+	if _repushed_token != null:
+		var token = _repushed_token
+		_repushed_token = null
+		return token
 	var token = _get_next()
 	_debug_tokens.append(token)
 	return token
+
+
+func repush_token(token: Token):
+	assert(_repushed_token == null)
+	_repushed_token = token
 
 
 #func repush_token(token: Token):
