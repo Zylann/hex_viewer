@@ -163,6 +163,18 @@ func _make_hex_images(buffer):
 	# DEBUG
 #	for i in len(atlases):
 #		atlases[i].save_png(str("res://debug_data/atlas_", i, ".png"))
+#	for i in len(atlases):
+#		var gradient = load("res://gradient.tres")
+#		var im = atlases[i]
+#		im = im.duplicate()
+#		im.convert(Image.FORMAT_RGB8)
+#		im.lock()
+#		for y in im.get_height():
+#			for x in im.get_width():
+#				im.set_pixel(x, y, gradient.interpolate(im.get_pixel(x, y).r))
+#			print("Grading ", y, "/", im.get_height())
+#		im.unlock()
+#		im.save_png(str("res://debug_data/atlas_", i, ".png"))
 	
 	var time_spent = OS.get_ticks_msec() - time_before
 	print("Spent ", time_spent, " ms loading atlases")

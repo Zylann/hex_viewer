@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://main.gd" type="Script" id=1]
 [ext_resource path="res://gradient.tres" type="Gradient" id=2]
@@ -8,50 +8,78 @@
 [ext_resource path="res://text_view.gd" type="Script" id=6]
 [ext_resource path="res://minimap_material.tres" type="Material" id=7]
 [ext_resource path="res://minimap.gd" type="Script" id=8]
+[ext_resource path="res://schema/schema_editor.tscn" type="PackedScene" id=9]
 
 [node name="Main" type="Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 gradient = ExtResource( 2 )
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VB" type="VBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 8.0
 margin_top = 8.0
 margin_right = -8.0
 margin_bottom = -8.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="MenuBar" type="HBoxContainer" parent="VBoxContainer"]
+[node name="MenuBar" type="HBoxContainer" parent="VB"]
 margin_right = 1008.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 0, 24 )
 
-[node name="OpenButton" type="Button" parent="VBoxContainer/MenuBar"]
+[node name="OpenButton" type="Button" parent="VB/MenuBar"]
 margin_right = 59.0
 margin_bottom = 24.0
 text = "Open..."
 
-[node name="ReloadButton" type="Button" parent="VBoxContainer/MenuBar"]
+[node name="ReloadButton" type="Button" parent="VB/MenuBar"]
 margin_left = 63.0
 margin_right = 118.0
 margin_bottom = 24.0
 text = "Reload"
 
-[node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer"]
+[node name="VSeparator" type="VSeparator" parent="VB/MenuBar"]
+margin_left = 122.0
+margin_right = 126.0
+margin_bottom = 24.0
+
+[node name="OptionButton" type="OptionButton" parent="VB/MenuBar"]
+margin_left = 130.0
+margin_right = 238.0
+margin_bottom = 24.0
+disabled = true
+text = "Little Endian"
+
+[node name="HS" type="HSplitContainer" parent="VB"]
 margin_top = 28.0
 margin_right = 1008.0
 margin_bottom = 556.0
 size_flags_vertical = 3
-split_offset = 208
+split_offset = 250
 
-[node name="LeftPanel" type="ColorRect" parent="VBoxContainer/HSplitContainer"]
-margin_right = 208.0
+[node name="TabContainer" type="TabContainer" parent="VB/HS"]
+margin_right = 258.0
 margin_bottom = 528.0
+tab_align = 0
+
+[node name="QuickInfo" type="ColorRect" parent="VB/HS/TabContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
 color = Color( 0.0862745, 0.0862745, 0.0862745, 1 )
 
-[node name="DataInfo" type="GridContainer" parent="VBoxContainer/HSplitContainer/LeftPanel"]
+[node name="DataInfo" type="GridContainer" parent="VB/HS/TabContainer/QuickInfo"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -61,86 +89,99 @@ margin_bottom = -4.0
 mouse_filter = 2
 columns = 2
 script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="Main" type="HBoxContainer" parent="VBoxContainer/HSplitContainer"]
-margin_left = 220.0
+[node name="Schema" parent="VB/HS/TabContainer" instance=ExtResource( 9 )]
+visible = false
+
+[node name="Main" type="HBoxContainer" parent="VB/HS"]
+margin_left = 270.0
 margin_right = 1008.0
 margin_bottom = 528.0
 size_flags_vertical = 3
 script = ExtResource( 4 )
 
-[node name="ColorRect" type="ColorRect" parent="VBoxContainer/HSplitContainer/Main"]
-margin_right = 768.0
+[node name="ColorRect" type="ColorRect" parent="VB/HS/Main"]
+margin_right = 718.0
 margin_bottom = 528.0
 rect_clip_content = true
 size_flags_horizontal = 3
 color = Color( 0.0313726, 0.0313726, 0.0313726, 1 )
 
-[node name="ColorRect" type="ColorRect" parent="VBoxContainer/HSplitContainer/Main/ColorRect"]
+[node name="ColorRect" type="ColorRect" parent="VB/HS/Main/ColorRect"]
 anchor_right = 1.0
 rect_min_size = Vector2( 0, 24 )
 color = Color( 0.0862745, 0.0862745, 0.0862745, 1 )
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/Main/ColorRect"]
+[node name="VB" type="VBoxContainer" parent="VB/HS/Main/ColorRect"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
 margin_top = 4.0
 margin_right = -4.0
 margin_bottom = -4.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="Label" type="Label" parent="VBoxContainer/HSplitContainer/Main/ColorRect/VBoxContainer"]
+[node name="Label" type="Label" parent="VB/HS/Main/ColorRect/VB"]
 modulate = Color( 0.490196, 0.490196, 0.490196, 1 )
-margin_right = 760.0
-margin_bottom = 19.0
+margin_right = 710.0
+margin_bottom = 17.0
 custom_fonts/font = ExtResource( 5 )
 text = "Offset    00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f"
 
-[node name="TextView" type="Control" parent="VBoxContainer/HSplitContainer/Main/ColorRect/VBoxContainer"]
-margin_top = 23.0
-margin_right = 760.0
+[node name="TextView" type="Control" parent="VB/HS/Main/ColorRect/VB"]
+margin_top = 21.0
+margin_right = 710.0
 margin_bottom = 520.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 6 )
 font = ExtResource( 5 )
 
-[node name="Bg" type="Control" parent="VBoxContainer/HSplitContainer/Main/ColorRect/VBoxContainer/TextView"]
+[node name="Bg" type="Control" parent="VB/HS/Main/ColorRect/VB/TextView"]
 show_behind_parent = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="Minimap" type="Control" parent="VBoxContainer/HSplitContainer/Main"]
-editor/display_folded = true
+[node name="Minimap" type="Control" parent="VB/HS/Main"]
 self_modulate = Color( 0.603922, 0.603922, 0.603922, 1 )
 material = ExtResource( 7 )
-margin_left = 772.0
-margin_right = 788.0
+margin_left = 722.0
+margin_right = 738.0
 margin_bottom = 528.0
 rect_min_size = Vector2( 16, 0 )
 rect_clip_content = true
 script = ExtResource( 8 )
 
-[node name="Overlay" type="Control" parent="VBoxContainer/HSplitContainer/Main/Minimap"]
+[node name="Overlay" type="Control" parent="VB/HS/Main/Minimap"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="StatusBar" type="HBoxContainer" parent="VBoxContainer"]
+[node name="StatusBar" type="HBoxContainer" parent="VB"]
 margin_top = 560.0
 margin_right = 1008.0
 margin_bottom = 584.0
 rect_min_size = Vector2( 0, 24 )
 
-[node name="Label" type="Label" parent="VBoxContainer/StatusBar"]
+[node name="Label" type="Label" parent="VB/StatusBar"]
 margin_top = 5.0
 margin_right = 68.0
 margin_bottom = 19.0
 text = "Status text"
-[connection signal="pressed" from="VBoxContainer/MenuBar/OpenButton" to="." method="_on_OpenButton_pressed"]
-[connection signal="pressed" from="VBoxContainer/MenuBar/ReloadButton" to="." method="_on_ReloadButton_pressed"]
-[connection signal="hovered_offset_changed" from="VBoxContainer/HSplitContainer/Main/ColorRect/VBoxContainer/TextView" to="VBoxContainer/HSplitContainer/LeftPanel/DataInfo" method="_on_TextView_hovered_offset_changed"]
-[connection signal="draw" from="VBoxContainer/HSplitContainer/Main/ColorRect/VBoxContainer/TextView/Bg" to="VBoxContainer/HSplitContainer/Main/ColorRect/VBoxContainer/TextView" method="_on_Bg_draw"]
-[connection signal="ask_scroll" from="VBoxContainer/HSplitContainer/Main/Minimap" to="VBoxContainer/HSplitContainer/Main" method="_on_Minimap_ask_scroll"]
-[connection signal="draw" from="VBoxContainer/HSplitContainer/Main/Minimap/Overlay" to="VBoxContainer/HSplitContainer/Main/Minimap" method="_on_Overlay_draw"]
+
+[connection signal="pressed" from="VB/MenuBar/OpenButton" to="." method="_on_OpenButton_pressed"]
+[connection signal="pressed" from="VB/MenuBar/ReloadButton" to="." method="_on_ReloadButton_pressed"]
+[connection signal="schema_compiled" from="VB/HS/TabContainer/Schema" to="." method="_on_Schema_schema_compiled"]
+[connection signal="hovered_offset_changed" from="VB/HS/Main/ColorRect/VB/TextView" to="VB/HS/TabContainer/QuickInfo/DataInfo" method="_on_TextView_hovered_offset_changed"]
+[connection signal="draw" from="VB/HS/Main/ColorRect/VB/TextView/Bg" to="VB/HS/Main/ColorRect/VB/TextView" method="_on_Bg_draw"]
+[connection signal="ask_scroll" from="VB/HS/Main/Minimap" to="VB/HS/Main" method="_on_Minimap_ask_scroll"]
+[connection signal="draw" from="VB/HS/Main/Minimap/Overlay" to="VB/HS/Main/Minimap" method="_on_Overlay_draw"]

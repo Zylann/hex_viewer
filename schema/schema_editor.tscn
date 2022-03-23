@@ -1,0 +1,49 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://schema/schema_editor.gd" type="Script" id=1]
+[ext_resource path="res://hack_regular.tres" type="DynamicFont" id=2]
+
+[node name="SchemaEditor" type="MarginContainer"]
+margin_right = 258.0
+margin_bottom = 378.0
+custom_constants/margin_right = 4
+custom_constants/margin_top = 4
+custom_constants/margin_left = 4
+custom_constants/margin_bottom = 4
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VB" type="VBoxContainer" parent="."]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 254.0
+margin_bottom = 374.0
+
+[node name="TextEdit" type="TextEdit" parent="VB"]
+margin_right = 250.0
+margin_bottom = 334.0
+size_flags_vertical = 3
+custom_fonts/font = ExtResource( 2 )
+text = "Data {
+	int x;
+}
+"
+syntax_highlighting = true
+show_line_numbers = true
+highlight_all_occurrences = true
+caret_blink = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VB"]
+margin_top = 338.0
+margin_right = 250.0
+margin_bottom = 370.0
+rect_min_size = Vector2( 0, 32 )
+
+[node name="ErrorLabel" type="Label" parent="VB/ScrollContainer"]
+margin_right = 219.0
+margin_bottom = 14.0
+text = "Error info - line number - message"
+
+[connection signal="text_changed" from="VB/TextEdit" to="." method="_on_TextEdit_text_changed"]

@@ -1,8 +1,8 @@
 extends HBoxContainer
 
 
-onready var _text_view = get_node("ColorRect/VBoxContainer/TextView")
-onready var _minimap = get_node("Minimap")
+onready var _text_view = $ColorRect/VB/TextView
+onready var _minimap = $Minimap
 
 var _last_scroll_time = 0
 
